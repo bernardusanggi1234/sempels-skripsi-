@@ -1,0 +1,58 @@
+name: FlaskGuard security scan
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  scan:
+    name: FlaskGuard
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Analyze Flask application
+        uses: ./.tools/flaskguard
+        with:
+          target: Vulnerable-Flask-App-main/
+          report: flaskguard-report.json
+          fail-on-findings: 'true'
+          strict: 'false'
+      - name: Show scan summary
+        if: always()
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          report = Path('flaskguard-report.json')
+          if report.exists():
+              data = json.loads(report.read_text(encoding='utf-8'))
+              s = data['summary']
+              lines = [
+                  '## FlaskGuard scan',
+                  f"Files analyzed: **{s['scanned_files']}**",
+                  f"Candidate findings: **{s['candidate_findings']}**",
+                  f"Files with partial coverage: **{s['partial_files']}**",
+                  f"Errors: **{s['errors']}**; skipped: **{s['skipped_files']}**",
+                  'Download the **flaskguard-report** artifact for traces and coverage details.',
+                  'Candidates are not proof of exploitation. Zero findings does not prove safety.',
+                  'The scan check fails when candidates are found (--error).',
+              ]
+          else:
+              lines = ['## FlaskGuard scan', 'No report generated. Check checkout, installation and scan logs.']
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as output:
+              output.write('\n\n'.join(lines) + '\n')
+          PY
+      - name: Downloadable scan report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: flaskguard-report
+          path: flaskguard-report.json
+          if-no-files-found: warn
+          retention-days: 14

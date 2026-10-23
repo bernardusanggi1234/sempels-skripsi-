@@ -1,0 +1,25 @@
+{
+  "sources": [
+    {"id": "request.args", "match": "request.args", "cwe": "CWE-20", "severity": "medium"},
+    {"id": "request.form", "match": "request.form", "cwe": "CWE-20", "severity": "medium"},
+    {"id": "request.json", "match": "request.json", "cwe": "CWE-20", "severity": "medium"},
+    {"id": "request.cookies", "match": "request.cookies", "cwe": "CWE-20", "severity": "medium"},
+    {"id": "request.headers", "match": "request.headers", "cwe": "CWE-20", "severity": "medium"},
+    {"id": "request.values", "match": "request.values", "cwe": "CWE-20", "severity": "medium"},
+    {"id": "input", "match": "input", "cwe": "CWE-20", "severity": "medium"}
+  ],
+  "sinks": [
+    {"id": "execute", "match": "*.execute", "cwe": "CWE-89", "severity": "high"},
+    {"id": "text", "match": "text", "cwe": "CWE-89", "severity": "high"},
+    {"id": "os.system", "match": "os.system", "cwe": "CWE-78", "severity": "critical"},
+    {"id": "subprocess.run", "match": "subprocess.run", "cwe": "CWE-78", "severity": "high"},
+    {"id": "os.popen", "match": "os.popen", "cwe": "CWE-78", "severity": "high"},
+    {"id": "render_template_string", "match": "render_template_string", "cwe": "CWE-1336", "severity": "high"},
+    {"id": "eval", "match": "eval", "cwe": "CWE-95", "severity": "critical"},
+    {"id": "exec", "match": "exec", "cwe": "CWE-95", "severity": "critical"}
+  ],
+  "sanitizers": [
+    {"id": "escape", "match": "escape", "cwe": "CWE-116", "severity": "info"},
+    {"id": "markupsafe.escape", "match": "markupsafe.escape", "cwe": "CWE-116", "severity": "info"}
+  ]
+}

@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flaskguard-taint"
+version = "0.1.1"
+description = "Research static AST taint analyzer for Python Flask applications"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+flaskguard = "flaskguard.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["flaskguard*", "src*"]
+
+[tool.setuptools.package-data]
+"src.parser" = ["default_rules.json"]
